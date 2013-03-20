@@ -106,7 +106,7 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
         $fakerContext->generateTestData($fakerProperty, $fakerParam);
     }
 
-    public function providerTestTransformValue()
+    public function providerTestTransformValueGenerate()
     {
         return array(
             // valid regex for test data generation
@@ -123,17 +123,52 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider providerTestTransformValue
+     * @dataProvider providerTestTransformValueGenerate
      * @param $testString
      * @param $expected
      */
-    public function testTransformValue($testString, $expected)
+    public function testTransformValueGenerate($testString, $expected)
     {
         $fakerContext = $this->getMock('\FakerContext\FakerContext', array('getFaker'));
 
         $fakerContext->expects($this->any())
                      ->method('getFaker')
                      ->will($this->returnValue($this->getSeededFaker()));
+
+        $this->assertEquals(
+            $expected,
+            $fakerContext->transformValue($testString)
+        );
+    }
+
+    public function providerTestTransformValueRetrieve()
+    {
+        return array(
+            // valid regex for test data retrieval
+            array('[$hello]', 'test'),
+            array('[$t]', 'foo'),
+
+            // invalid regex
+            array('$hello', '$hello'),
+            array('[$]', '[$]'),
+            array('[$1]', '[$1]'),
+            array('asdlfkj', 'asdlfkj'),
+            array(1,1)
+        );
+    }
+
+    /**
+     * @dataProvider providerTestTransformValueRetrieve
+     * @param $testString
+     * @param $expected
+     */
+    public function testTransformValueRetrieve($testString, $expected)
+    {
+        $fakerContext = $this->getMock('\FakerContext\FakerContext', array('getTestData'));
+
+        $fakerContext->expects($this->any())
+            ->method('getTestData')
+            ->will($this->returnValue($expected));
 
         $this->assertEquals(
             $expected,

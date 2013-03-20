@@ -10,7 +10,7 @@ use Behat\Behat\Exception\Exception;
 class FakerContext extends BehatContext
 {
     const GENERATE_TEST_DATA_REGEX = '~\[\$([a-zA-Z]+)=([a-zA-Z]+)(\(([0-9]+)\))?\]~';
-    const GET_TEST_DATA_REGEX = '~\[([a-zA-Z]*)\]~';
+    const GET_TEST_DATA_REGEX = '~\[\$([a-zA-Z]+)\]~';
     private $generatedTestData;
 
     /**

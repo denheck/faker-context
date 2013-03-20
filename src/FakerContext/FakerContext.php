@@ -100,7 +100,7 @@ class FakerContext extends BehatContext
      * @param $key
      * @param $value
      */
-    private function setTestData($key, $value)
+    protected function setTestData($key, $value)
     {
         $this->generatedTestData[$key] = $value;
     }
@@ -109,12 +109,12 @@ class FakerContext extends BehatContext
      * @param $position
      * @return mixed
      */
-    private function getTestData($position)
+    protected function getTestData($position)
     {
         return $this->generatedTestData[$position];
     }
 
-    private function getFaker()
+    protected function getFaker()
     {
         if (!$this->faker) {
             $this->faker = \Faker\Factory::create();

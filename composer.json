@@ -1,0 +1,21 @@
+{
+    "name": "denheck/FakerContext",
+    "description": "Behat context for generating test data",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dennis Heckman",
+            "email": "denheck@gmail.com",
+            "role": "developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "FakerContext": "src/"
+    }
+    },
+        "require": {
+            "fzaninotto/faker": "1.1.*@dev",
+            "behat/behat": "2.4.*@stable"
+    }
+}

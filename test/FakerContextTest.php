@@ -7,6 +7,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use FakerContext\FakerContext,
     Behat\Gherkin\Node\TableNode,
     Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Faker\Factory;
 
 class FakerContextTest extends \PHPUnit_Framework_TestCase
 {
@@ -103,5 +104,50 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($faker));
 
         $fakerContext->generateTestData($fakerProperty, $fakerParam);
+    }
+
+    public function providerTestTransformValue()
+    {
+        return array(
+            // valid regex for test data generation
+            array('[$hello=text]', $this->getSeededFaker()->text),
+            array('[$hello=text(100)]', $this->getSeededFaker()->text(100)),
+            array('[$blah=name]', $this->getSeededFaker()->name),
+
+            // invalid regex
+            array('[$hello=text', '[$hello=text'),
+            array('[$1=text]', '[$1=text]'),
+            array('[$=text]', '[$=text]'),
+            array('$hello=text', '$hello=text')
+        );
+    }
+
+    /**
+     * @dataProvider providerTestTransformValue
+     * @param $testString
+     * @param $expected
+     */
+    public function testTransformValue($testString, $expected)
+    {
+        $fakerContext = $this->getMock('\FakerContext\FakerContext', array('getFaker'));
+
+        $fakerContext->expects($this->any())
+                     ->method('getFaker')
+                     ->will($this->returnValue($this->getSeededFaker()));
+
+        $this->assertEquals(
+            $expected,
+            $fakerContext->transformValue($testString)
+        );
+    }
+
+    private function getSeededFaker()
+    {
+        if (!$this->faker) {
+            $this->faker = \Faker\Factory::create();
+        }
+
+        $this->faker->seed(1234);
+        return $this->faker;
     }
 }

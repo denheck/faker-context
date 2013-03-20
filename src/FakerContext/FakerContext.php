@@ -79,7 +79,7 @@ class FakerContext extends BehatContext
         if (preg_match(self::GENERATE_TEST_DATA_REGEX, $string, $matches)) {
             $key = $matches[1];
             $fakerProperty = $matches[2];
-            $fakerParameter = $matches[3];
+            $fakerParameter = $matches[4];
 
             $testData = $this->generateTestData($fakerProperty, $fakerParameter);
 

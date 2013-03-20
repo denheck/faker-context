@@ -1,7 +1,11 @@
 <?php
 
+namespace FakerContext;
+
 use Behat\Behat\Context\BehatContext,
-    Behat\Gherkin\Node\TableNode;
+    Behat\Gherkin\Node\TableNode,
+    Behat\Behat\Exception\ErrorException;
+use Behat\Behat\Exception\Exception;
 
 class FakerContext extends BehatContext
 {
@@ -12,10 +16,9 @@ class FakerContext extends BehatContext
     /**
      * @BeforeScenario
      */
-    public function tearDown($event)
+    public function setUp($event)
     {
         $this->generatedTestData = array();
-        $this->faker = Faker\Factory::create();
     }
 
     /**
@@ -30,7 +33,27 @@ class FakerContext extends BehatContext
         }
     }
 
-    private function transformTable(TableNode $table)
+    /**
+     * @param $fakerProperty
+     * @param null $fakerParameter
+     * @return mixed
+     */
+    public function generateTestData($fakerProperty, $fakerParameter = null)
+    {
+        $fakerProperty = (string) $fakerProperty;
+
+        if ($fakerParameter) {
+            return $this->getFaker()->$fakerProperty($fakerParameter);
+        } else {
+            return $this->getFaker()->$fakerProperty;
+        }
+    }
+
+    /**
+     * @param TableNode $table
+     * @return TableNode
+     */
+    public function transformTable(TableNode $table)
     {
         $rows = array();
 
@@ -47,7 +70,11 @@ class FakerContext extends BehatContext
         return $tableNode;
     }
 
-    private function transformValue($string)
+    /**
+     * @param $string
+     * @return mixed
+     */
+    public function transformValue($string)
     {
         if (preg_match(self::GENERATE_TEST_DATA_REGEX, $string, $matches)) {
             $key = $matches[1];
@@ -70,20 +97,6 @@ class FakerContext extends BehatContext
     }
 
     /**
-     * @param $fakerProperty
-     * @param null $fakerParameter
-     * @return mixed
-     */
-    private function generateTestData($fakerProperty, $fakerParameter = null)
-    {
-        if ($fakerParameter) {
-            return $this->faker->$fakerProperty($fakerParameter);
-        } else {
-            return $this->faker->$fakerProperty;
-        }
-    }
-
-    /**
      * @param $key
      * @param $value
      */
@@ -99,5 +112,14 @@ class FakerContext extends BehatContext
     private function getTestData($position)
     {
         return $this->generatedTestData[$position];
+    }
+
+    private function getFaker()
+    {
+        if (!$this->faker) {
+            $this->faker = \Faker\Factory::create();
+        }
+
+        return $this->faker;
     }
 }

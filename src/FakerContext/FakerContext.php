@@ -1,11 +1,10 @@
 <?php
+// TODO: add support for generating test data within sentences ie "[$c=company] is my favorite company"
 
 namespace FakerContext;
 
 use Behat\Behat\Context\BehatContext,
-    Behat\Gherkin\Node\TableNode,
-    Behat\Behat\Exception\ErrorException;
-use Behat\Behat\Exception\Exception;
+    Behat\Gherkin\Node\TableNode;
 
 class FakerContext extends BehatContext
 {

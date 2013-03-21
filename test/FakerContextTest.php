@@ -115,6 +115,7 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
             array('[blah=name]', $this->getSeededFaker()->name),
             array('[1=company]', $this->getSeededFaker()->company),
             array('[address=address]', $this->getSeededFaker()->address),
+            array('[$=email]', $this->getSeededFaker()->email),
 
             // invalid regex
             array('[hello=text', '[hello=text'),
@@ -148,6 +149,7 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
             // valid regex for test data retrieval
             array('[hello]', 'test'),
             array('[t]', 'foo'),
+            array('[$]', 'bar'),
 
             // invalid regex
             array('[test,]', '[test,]'),

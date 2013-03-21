@@ -8,8 +8,8 @@ use Behat\Behat\Context\BehatContext,
 
 class FakerContext extends BehatContext
 {
-    const GENERATE_TEST_DATA_REGEX = '~\[\$([a-zA-Z]+)=([a-zA-Z]+)(\(([0-9]+)\))?\]~';
-    const GET_TEST_DATA_REGEX = '~\[\$([a-zA-Z]+)\]~';
+    const GENERATE_TEST_DATA_REGEX = '~\[([a-zA-Z0-9]+)=([a-zA-Z]+)(\(([0-9]+)\))?\]~';
+    const GET_TEST_DATA_REGEX = '~\[([a-zA-Z0-9]+)\]~';
     private $generatedTestData;
 
     /**

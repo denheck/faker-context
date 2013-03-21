@@ -110,15 +110,16 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             // valid regex for test data generation
-            array('[$hello=text]', $this->getSeededFaker()->text),
-            array('[$hello=text(100)]', $this->getSeededFaker()->text(100)),
-            array('[$blah=name]', $this->getSeededFaker()->name),
+            array('[hello=text]', $this->getSeededFaker()->text),
+            array('[hello=text(100)]', $this->getSeededFaker()->text(100)),
+            array('[blah=name]', $this->getSeededFaker()->name),
+            array('[1=company]', $this->getSeededFaker()->company),
+            array('[address=address]', $this->getSeededFaker()->address),
 
             // invalid regex
-            array('[$hello=text', '[$hello=text'),
-            array('[$1=text]', '[$1=text]'),
-            array('[$=text]', '[$=text]'),
-            array('$hello=text', '$hello=text')
+            array('[hello=text', '[hello=text'),
+            array('[=text]', '[=text]'),
+            array('hello=text', 'hello=text')
         );
     }
 
@@ -145,13 +146,11 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             // valid regex for test data retrieval
-            array('[$hello]', 'test'),
-            array('[$t]', 'foo'),
+            array('[hello]', 'test'),
+            array('[t]', 'foo'),
 
             // invalid regex
-            array('$hello', '$hello'),
-            array('[$]', '[$]'),
-            array('[$1]', '[$1]'),
+            array('[test,]', '[test,]'),
             array('asdlfkj', 'asdlfkj'),
             array(1,1)
         );

@@ -48,7 +48,13 @@ class FakerContext extends BehatContext
                 );
             }
 
-            return call_user_func_array(array($this->getFaker(), $fakerProperty), $fakerParameters);
+            $result = call_user_func_array(array($this->getFaker(), $fakerProperty), $fakerParameters);
+
+            if (is_a($result, 'DateTime')) {
+                $result = $result->format('Y-m-d H:i:s');
+            }
+
+            return $result;
         } else {
             return $this->getFaker()->$fakerProperty;
         }

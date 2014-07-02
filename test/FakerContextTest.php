@@ -59,6 +59,12 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
         if ($fakerProperty) {
             if ($fakerParameters) {
                 $result = call_user_func_array(array($faker, $fakerProperty), $fakerParameters);
+
+                if (is_a($result, 'DateTime')) {
+                    $result = $result->format('Y-m-d H:i:s');
+                }
+
+                return $result;
             } else {
                 $result = $faker->$fakerProperty;
             }
@@ -118,7 +124,8 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
             array('[$=email]', $this->getSeededFaker()->email),
             array('[d=date("Y-m-d H:i:s")]', $this->getSeededFaker()->date("Y-m-d H:i:s")),
             array('[d=date("Y-m-d H:i:s")]', $this->getSeededFaker()->date("Y-m-d H:i:s")),
-            array('[d=dateTimeBetween("-30 years", "now")]', $this->getSeededFaker()->dateTimeBetween("-30 years", "now")),
+            array('[d=dateTimeBetween("-30 years", "now")]', $this->getSeededFaker()->dateTimeBetween("-30 years", "now")->format('Y-m-d H:i:s')),
+            array('[d=dateTimeBetween("-4 days", "-2 days")]', $this->getSeededFaker()->dateTimeBetween("-4 days", "-2 days")->format('Y-m-d H:i:s')),
 
             // invalid regex
             array('[hello=text', '[hello=text'),

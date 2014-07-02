@@ -41,24 +41,24 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('text', null),
-            array('text', 30),
-            array('name', null)
+            array('text', array(30)),
+            array('dateTimeBetween', array("-30 years", "now")),
         );
     }
 
     /**
      * @dataProvider providerGenerateTestData
      * @param $fakerProperty
-     * @param $fakerParam
+     * @param $fakerParameters
      */
-    public function testGenerateTestData($fakerProperty, $fakerParam)
+    public function testGenerateTestData($fakerProperty, $fakerParameters)
     {
         $faker = \Faker\Factory::create();
         $faker->seed(1234);
 
         if ($fakerProperty) {
-            if ($fakerParam) {
-                $result = $faker->$fakerProperty($fakerParam);
+            if ($fakerParameters) {
+                $result = call_user_func_array(array($faker, $fakerProperty), $fakerParameters);
             } else {
                 $result = $faker->$fakerProperty;
             }
@@ -73,7 +73,7 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
                      ->will($this->returnValue($faker));
 
         $this->assertEquals(
-            $fakerContext->generateTestData($fakerProperty, $fakerParam),
+            $fakerContext->generateTestData($fakerProperty, $fakerParameters),
             $result
         );
     }
@@ -92,9 +92,9 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
      * @dataProvider providerGenerateTestDataException
      * @expectedException InvalidArgumentException
      * @param $fakerProperty
-     * @param $fakerParam
+     * @param $fakerParameters
      */
-    public function testGenerateTestDataException($fakerProperty, $fakerParam)
+    public function testGenerateTestDataException($fakerProperty, $fakerParameters)
     {
         $faker = \Faker\Factory::create();
         $fakerContext = $this->getMock('\FakerContext\FakerContext', array('getFaker'));
@@ -103,7 +103,7 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
             ->method('getFaker')
             ->will($this->returnValue($faker));
 
-        $fakerContext->generateTestData($fakerProperty, $fakerParam);
+        $fakerContext->generateTestData($fakerProperty, $fakerParameters);
     }
 
     public function providerTestTransformValueGenerate()
@@ -117,6 +117,8 @@ class FakerContextTest extends \PHPUnit_Framework_TestCase
             array('[address=address]', $this->getSeededFaker()->address),
             array('[$=email]', $this->getSeededFaker()->email),
             array('[d=date("Y-m-d H:i:s")]', $this->getSeededFaker()->date("Y-m-d H:i:s")),
+            array('[d=date("Y-m-d H:i:s")]', $this->getSeededFaker()->date("Y-m-d H:i:s")),
+            array('[d=dateTimeBetween("-30 years", "now")]', $this->getSeededFaker()->dateTimeBetween("-30 years", "now")),
 
             // invalid regex
             array('[hello=text', '[hello=text'),

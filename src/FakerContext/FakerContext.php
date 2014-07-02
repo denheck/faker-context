@@ -8,7 +8,7 @@ use Behat\Behat\Context\BehatContext,
 
 class FakerContext extends BehatContext
 {
-    const GENERATE_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)=([a-zA-Z]+)(\(["\']?([ 0-9a-zA-Z:-]+)["\']?\))?\]~';
+    const GENERATE_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)=([a-zA-Z]+)(\(([,\'" 0-9a-zA-Z:-]+)\))?\]~';
     const GET_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)\]~';
     private $generatedTestData;
 
@@ -34,15 +34,21 @@ class FakerContext extends BehatContext
 
     /**
      * @param $fakerProperty
-     * @param null $fakerParameter
+     * @param array $fakerParameters
      * @return mixed
      */
-    public function generateTestData($fakerProperty, $fakerParameter = null)
+    public function generateTestData($fakerProperty, $fakerParameters = array())
     {
         $fakerProperty = (string) $fakerProperty;
 
-        if ($fakerParameter) {
-            return $this->getFaker()->$fakerProperty($fakerParameter);
+        if ($fakerParameters) {
+            if (!is_array($fakerParameters)) {
+                throw new \InvalidArgumentException(
+                    "generateTestData function only supports arrays for second parameter"
+                );
+            }
+
+            return call_user_func_array(array($this->getFaker(), $fakerProperty), $fakerParameters);
         } else {
             return $this->getFaker()->$fakerProperty;
         }
@@ -78,9 +84,12 @@ class FakerContext extends BehatContext
         if (preg_match(self::GENERATE_TEST_DATA_REGEX, $string, $matches)) {
             $key = $matches[1];
             $fakerProperty = $matches[2];
-            $fakerParameter = $matches[4];
 
-            $testData = $this->generateTestData($fakerProperty, $fakerParameter);
+            if ($matches[4]) {
+                $fakerParameters = array_map("trim", explode(',', str_replace(array('"', "'"), "", $matches[4])));
+            }
+
+            $testData = $this->generateTestData($fakerProperty, $fakerParameters);
 
             $this->setTestData($key,$testData);
 

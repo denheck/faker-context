@@ -91,8 +91,10 @@ class FakerContext extends BehatContext
             $key = $matches[1];
             $fakerProperty = $matches[2];
 
-            if ($matches[4]) {
+            if (isset($matches[4])) {
                 $fakerParameters = array_map("trim", explode(',', str_replace(array('"', "'"), "", $matches[4])));
+            } else {
+                $fakerParameters = array();
             }
 
             $testData = $this->generateTestData($fakerProperty, $fakerParameters);

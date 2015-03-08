@@ -4,13 +4,16 @@
 namespace FakerContext;
 
 use Behat\Behat\Context\BehatContext,
-    Behat\Gherkin\Node\TableNode;
+    Behat\Gherkin\Node\TableNode,
+    Faker\Factory as FakerFactory;
 
 class FakerContext extends BehatContext
 {
     const GENERATE_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)=([a-zA-Z]+)(\(([,\'" 0-9a-zA-Z:-]+)\))?\]~';
     const GET_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)\]~';
     private $generatedTestData;
+
+    protected $_faker;
 
     /**
      * @BeforeScenario
@@ -128,12 +131,14 @@ class FakerContext extends BehatContext
         return $this->generatedTestData[$position];
     }
 
+    /**
+     * @return \Faker\Generator
+     */
     protected function getFaker()
     {
-        if (!$this->faker) {
-            $this->faker = \Faker\Factory::create();
+        if (!$this->_faker) {
+            $this->_faker = FakerFactory::create();
         }
-
-        return $this->faker;
+        return $this->_faker;
     }
 }

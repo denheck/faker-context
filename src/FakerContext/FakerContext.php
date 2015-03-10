@@ -10,14 +10,14 @@ class FakerContext extends BehatContext
 {
     const GENERATE_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)=([a-zA-Z]+)(\(([,\'" 0-9a-zA-Z:-]+)\))?\]~';
     const GET_TEST_DATA_REGEX = '~\[([$a-zA-Z0-9]+)\]~';
-    private $generatedTestData;
+    protected $_generatedTestData;
 
     /**
      * @BeforeScenario
      */
     public function setUp($event)
     {
-        $this->generatedTestData = array();
+        $this->_generatedTestData = array();
     }
 
     /**
@@ -116,7 +116,7 @@ class FakerContext extends BehatContext
      */
     protected function setTestData($key, $value)
     {
-        $this->generatedTestData[$key] = $value;
+        $this->_generatedTestData[$key] = $value;
     }
 
     /**
@@ -125,7 +125,7 @@ class FakerContext extends BehatContext
      */
     protected function getTestData($position)
     {
-        return $this->generatedTestData[$position];
+        return $this->_generatedTestData[$position];
     }
 
     protected function getFaker()

@@ -15,7 +15,7 @@
     }
     },
     "require": {
-        "fzaninotto/faker": "1.1.*@dev",
+        "fzaninotto/faker": "1.*",
         "behat/behat": "2.4.*@stable"
     },
     "require-dev": {
